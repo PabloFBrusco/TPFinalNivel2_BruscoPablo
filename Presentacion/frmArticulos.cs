@@ -123,9 +123,7 @@ namespace Presentacion
             }
             catch (Exception)
             {
-
                 ptbFoto.Load("https://img.freepik.com/vector-premium/icono-marco-fotos-foto-vacia-blanco-vector-sobre-fondo-transparente-aislado-eps-10_399089-1290.jpg?w=740");
-
             }
         }
 
@@ -364,7 +362,6 @@ namespace Presentacion
                     if (respuesta == DialogResult.Yes)
                     {
                         negocio.eliminar(articulo.id);
-
                         llenarGrilla();
                     }
                 }
@@ -380,20 +377,44 @@ namespace Presentacion
 
         private void btnLink_Click(object sender, EventArgs e)
         {
+            //string nombreArchivo;
+            string ruta = ConfigurationManager.AppSettings["images"];
             archivo = new OpenFileDialog();
             archivo.Filter = "jpg|*.jpg;|png|*.png";
             if (archivo.ShowDialog() == DialogResult.OK)
             {
                 txtLinkFoto.Text = archivo.FileName;
-
             }
-        }
+            txtLinkFoto.Focus();
 
+        }
         private void txtLinkFoto_Leave(object sender, EventArgs e)
         {
+            string nombreArchivo;
+            string ruta = ConfigurationManager.AppSettings["images"];
             CargarImagen(txtLinkFoto.Text);
+            if (!(ptbFoto.ImageLocation == "https://img.freepik.com/vector-premium/icono-marco-fotos-foto-vacia-blanco-vector-sobre-fondo-transparente-aislado-eps-10_399089-1290.jpg?w=740"))
+            {
+                archivo = new OpenFileDialog();
+                archivo.FileName = txtLinkFoto.Text;
+                nombreArchivo = archivo.SafeFileName;
+                if (!(ruta == ""))
+                {
+                    if (archivo != null && !(txtLinkFoto).Text.ToUpper().Contains("HTTP"))
+                    {
+                        DialogResult respuesta = MessageBox.Show("¿Desea guardar una copia del archivo: " + nombreArchivo + " en la carpeta " + ruta + "?", "Guardar Imagen", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        if (respuesta == DialogResult.Yes)
+                        {
+                            if (!(File.Exists(ruta + "\\" + nombreArchivo)))
+                            {
+                                File.Copy(archivo.FileName, ruta + "\\" + nombreArchivo);
+                            }
+                            txtLinkFoto.Text = ruta + "\\" + nombreArchivo;
+                        }
+                    }
+                }
+            }
         }
-
         private void txtFiltroRapido_TextChanged(object sender, EventArgs e)
         {
             List<Articulo> listaFiltrada;

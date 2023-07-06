@@ -18,6 +18,7 @@ namespace Presentacion
     public partial class frmOtrosParamertos : Form
     {
         private OpenFileDialog archivo = null;
+        private FolderBrowserDialog carpeta = null;
         Excepcion error = new Excepcion();
         public frmOtrosParamertos()
         {
@@ -27,6 +28,7 @@ namespace Presentacion
         private void frmOtrosParamertos_Load(object sender, EventArgs e)
         {
             txtLogo.Text = ConfigurationManager.AppSettings["logo"];
+            txtImages.Text = ConfigurationManager.AppSettings["images"];
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -38,11 +40,13 @@ namespace Presentacion
                 if (config.AppSettings.Settings.Count <= 4)
                 {
                     config.AppSettings.Settings.Add("logo", txtLogo.Text);
-                    
+                    config.AppSettings.Settings.Add("images", txtImages.Text);
+
                 }
                 else
                 {
                     config.AppSettings.Settings["logo"].Value = txtLogo.Text;
+                    config.AppSettings.Settings["images"].Value = txtImages.Text;
                 }
 
                 config.Save(ConfigurationSaveMode.Modified);
@@ -59,7 +63,6 @@ namespace Presentacion
             
 
         }
-
         private void btnBuscar_Click(object sender, EventArgs e)
         {
             archivo = new OpenFileDialog();
@@ -68,6 +71,15 @@ namespace Presentacion
             {
                 txtLogo.Text = archivo.FileName;
                 
+            }
+        }
+
+        private void btnImages_Click(object sender, EventArgs e)
+        {
+            carpeta = new FolderBrowserDialog();
+            if (carpeta.ShowDialog() == DialogResult.OK)
+            {
+                txtImages.Text = carpeta.SelectedPath;
             }
         }
     }
